@@ -126,6 +126,17 @@ public class MainActivity extends Activity {
             LinearLayout.LayoutParams.MATCH_PARENT, 0, 2.85f);
         frame.addView(grid, gridLp);
 
+        // Footer credit
+        TextView footer = new TextView(this);
+        footer.setText("QUINTO, GERALD L. PLATECH");
+        footer.setTextColor(NeonGlassViews.TEXT_MUTED);
+        footer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+        footer.setLetterSpacing(0.08f);
+        footer.setGravity(Gravity.CENTER);
+        footer.setPadding(0, NeonGlassViews.dp(this, 8), 0, 0);
+        frame.addView(footer, new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
         outer.addView(frame, new FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         setContentView(outer);

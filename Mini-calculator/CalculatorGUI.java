@@ -95,6 +95,13 @@ public class CalculatorGUI extends JFrame {
         }
 
         frame.add(grid, BorderLayout.CENTER);
+
+        JLabel footer = new JLabel("QUINTO, GERALD L. PLATECH", SwingConstants.CENTER);
+        footer.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        footer.setForeground(TEXT_MUTED);
+        footer.setBorder(new EmptyBorder(6, 0, 0, 0));
+        frame.add(footer, BorderLayout.SOUTH);
+
         outer.add(frame, BorderLayout.CENTER);
         setContentPane(outer);
         bindKeyboard();
