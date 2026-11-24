@@ -164,6 +164,7 @@ public class ScientificCalculator extends JFrame {
                 degreesMode = !degreesMode;
                 modeBtn.setText(degreesMode ? "DEG" : "RAD");
                 updateStatus();
+                if (!justEvaluated) refreshLive();
                 return;
             case "MC": memoryValue = 0; updateStatus(); return;
             case "MR":
@@ -219,7 +220,7 @@ public class ScientificCalculator extends JFrame {
             case "=": evaluate(); return;
             default: insertDigit(in.charAt(0)); break;
         }
-        setDisplay(expr.length() == 0 ? "0" : pretty(expr.toString()));
+        refreshLive();
     }
 
     private void updateStatus() {
@@ -262,7 +263,35 @@ public class ScientificCalculator extends JFrame {
             }
             if (!removed) expr.deleteCharAt(expr.length() - 1);
         }
-        setDisplay(expr.length() == 0 ? "0" : pretty(expr.toString()));
+        refreshLive();
+    }
+
+    private void refreshLive() {
+        if (expr.length() == 0) {
+            exprLabel.setText(" ");
+            setDisplay("0");
+            return;
+        }
+        String raw = expr.toString();
+        setDisplay(pretty(raw));
+        boolean hasExpr = false;
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if (isOp(c) || c == '%' || c == '!' || c == '(' || c == 'π' || c == 'e' || c == '√' || Character.isLetter(c)) {
+                hasExpr = true;
+                break;
+            }
+        }
+        if (hasExpr) {
+            try {
+                double res = new ScientificParser(autoClose(raw), degreesMode).parse();
+                if (Double.isFinite(res)) {
+                    exprLabel.setText("= " + formatResult(res));
+                    return;
+                }
+            } catch (Exception ignored) {}
+        }
+        exprLabel.setText(" ");
     }
 
     private void resetEvalFlag(boolean clearExpr) {

@@ -48,13 +48,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v1.2"
+          TAG="v1.3"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/Mini-Calculator.apk dist/Scientific-Calculator.apk --clobber
           else
             gh release create "$TAG" dist/Mini-Calculator.apk dist/Scientific-Calculator.apk \
               --title "Neon Glass Calculators $TAG" \
-              --notes "### What's New in $TAG\n- Added footer credit (\`QUINTO, GERALD L. PLATECH\`) to both Mini Calculator and Scientific Calculator\n\nDownload either **Mini-Calculator.apk** or **Scientific-Calculator.apk** below and install on your Android device." \
+              --notes "### What's New in $TAG\n- Added live auto-calculation preview (shows \`= answer\` while typing before pressing \`=\`)\n- Added scientific-notation chaining support (e.g. \`1E12 + 5\`)\n\nDownload either **Mini-Calculator.apk** or **Scientific-Calculator.apk** below and install on your Android device." \
               --latest
           fi
 

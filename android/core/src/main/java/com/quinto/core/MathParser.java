@@ -175,6 +175,13 @@ public final class MathParser {
         int start = p;
         while (p < s.length() && (Character.isDigit(s.charAt(p)) || s.charAt(p) == '.')) p++;
         if (start == p) throw new IllegalArgumentException();
+        if (p < s.length() && s.charAt(p) == 'E') {
+            int ep = p + 1;
+            if (ep < s.length() && (s.charAt(ep) == '+' || s.charAt(ep) == '-')) ep++;
+            int ed = ep;
+            while (ep < s.length() && Character.isDigit(s.charAt(ep))) ep++;
+            if (ep > ed) p = ep;
+        }
         return Double.parseDouble(s.substring(start, p));
     }
 

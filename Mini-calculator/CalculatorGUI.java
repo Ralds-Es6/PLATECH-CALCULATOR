@@ -145,7 +145,7 @@ public class CalculatorGUI extends JFrame {
             case "=": evaluate(); return;
             default: insertDigit(in.charAt(0)); break;
         }
-        setDisplay(expr.length() == 0 ? "0" : pretty(expr.toString()));
+        refreshLive();
     }
 
     private void clear() {
@@ -159,7 +159,35 @@ public class CalculatorGUI extends JFrame {
         if (hasError) { clear(); return; }
         resetEvalFlag(false);
         if (expr.length() > 0) expr.deleteCharAt(expr.length() - 1);
-        setDisplay(expr.length() == 0 ? "0" : pretty(expr.toString()));
+        refreshLive();
+    }
+
+    private void refreshLive() {
+        if (expr.length() == 0) {
+            exprLabel.setText(" ");
+            setDisplay("0");
+            return;
+        }
+        String raw = expr.toString();
+        setDisplay(pretty(raw));
+        boolean hasOp = false;
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if (isOp(c) || c == '%' || c == '(') { hasOp = true; break; }
+        }
+        if (hasOp) {
+            try {
+                StringBuilder full = new StringBuilder(raw);
+                long open = raw.chars().filter(c -> c == '(').count() - raw.chars().filter(c -> c == ')').count();
+                while (open-- > 0) full.append(')');
+                double res = new ExprParser(full.toString()).parse();
+                if (Double.isFinite(res)) {
+                    exprLabel.setText("= " + formatResult(res));
+                    return;
+                }
+            } catch (Exception ignored) {}
+        }
+        exprLabel.setText(" ");
     }
 
     private void resetEvalFlag(boolean clearExpr) {

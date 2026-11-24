@@ -167,6 +167,7 @@ public class MainActivity extends Activity {
                 degreesMode = !degreesMode;
                 modeBtn.setText(degreesMode ? "DEG" : "RAD");
                 updateStatus();
+                if (!justEvaluated) refreshLive();
                 return;
             case "MC": memoryValue = 0; updateStatus(); return;
             case "MR":
@@ -222,7 +223,7 @@ public class MainActivity extends Activity {
             case "=": evaluate(); return;
             default: insertDigit(in.charAt(0)); break;
         }
-        setDisplay(expr.length() == 0 ? "0" : MathParser.pretty(expr.toString()));
+        refreshLive();
     }
 
     private void updateStatus() {
@@ -264,7 +265,35 @@ public class MainActivity extends Activity {
             }
             if (!removed) expr.deleteCharAt(expr.length() - 1);
         }
-        setDisplay(expr.length() == 0 ? "0" : MathParser.pretty(expr.toString()));
+        refreshLive();
+    }
+
+    private void refreshLive() {
+        if (expr.length() == 0) {
+            exprView.setText(" ");
+            setDisplay("0");
+            return;
+        }
+        String raw = expr.toString();
+        setDisplay(MathParser.pretty(raw));
+        boolean hasExpr = false;
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if (MathParser.isOp(c) || c == '%' || c == '!' || c == '(' || c == 'π' || c == 'e' || c == '√' || Character.isLetter(c)) {
+                hasExpr = true;
+                break;
+            }
+        }
+        if (hasExpr) {
+            try {
+                double res = MathParser.evaluate(MathParser.autoClose(raw), degreesMode);
+                if (Double.isFinite(res)) {
+                    exprView.setText("= " + MathParser.formatResult(res));
+                    return;
+                }
+            } catch (Exception ignored) {}
+        }
+        exprView.setText(" ");
     }
 
     private void resetEvalFlag(boolean clearExpr) {

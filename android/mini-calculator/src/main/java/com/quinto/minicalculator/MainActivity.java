@@ -161,7 +161,7 @@ public class MainActivity extends Activity {
             case "=": evaluate(); return;
             default: insertDigit(in.charAt(0)); break;
         }
-        setDisplay(expr.length() == 0 ? "0" : MathParser.pretty(expr.toString()));
+        refreshLive();
     }
 
     private void clear() {
@@ -175,7 +175,32 @@ public class MainActivity extends Activity {
         if (hasError) { clear(); return; }
         resetEvalFlag(false);
         if (expr.length() > 0) expr.deleteCharAt(expr.length() - 1);
-        setDisplay(expr.length() == 0 ? "0" : MathParser.pretty(expr.toString()));
+        refreshLive();
+    }
+
+    private void refreshLive() {
+        if (expr.length() == 0) {
+            exprView.setText(" ");
+            setDisplay("0");
+            return;
+        }
+        String raw = expr.toString();
+        setDisplay(MathParser.pretty(raw));
+        boolean hasOp = false;
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if (MathParser.isOp(c) || c == '%' || c == '(') { hasOp = true; break; }
+        }
+        if (hasOp) {
+            try {
+                double res = MathParser.evaluate(MathParser.autoClose(raw), true);
+                if (Double.isFinite(res)) {
+                    exprView.setText("= " + MathParser.formatResult(res));
+                    return;
+                }
+            } catch (Exception ignored) {}
+        }
+        exprView.setText(" ");
     }
 
     private void resetEvalFlag(boolean clearExpr) {
