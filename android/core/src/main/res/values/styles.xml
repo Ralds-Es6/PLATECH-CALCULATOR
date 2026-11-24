@@ -1,0 +1,7 @@
+<resources>
+    <style name="NeonCalculatorTheme" parent="android:Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">#0E1018</item>
+        <item name="android:statusBarColor">#0E1018</item>
+        <item name="android:navigationBarColor">#0E1018</item>
+    </style>
+</resources>

@@ -1,0 +1,50 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="0"
+                android:startY="0"
+                android:endX="108"
+                android:endY="108"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#141628"/>
+                <item android:offset="1.0" android:color="#0B0D16"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <path android:pathData="M24,18 L84,18 Q90,18 90,24 L90,84 Q90,90 84,90 L24,90 Q18,90 18,84 L18,24 Q18,18 24,18 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="18"
+                android:startY="18"
+                android:endX="90"
+                android:endY="90"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#E05CF5"/>
+                <item android:offset="1.0" android:color="#7C3AED"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Mini calculator screen -->
+    <path
+        android:fillColor="#1C102C"
+        android:pathData="M31,29 L77,29 Q80,29 80,32 L80,44 Q80,47 77,47 L31,47 Q28,47 28,44 L28,32 Q28,29 31,29 Z"/>
+
+    <!-- Mini buttons row 1 -->
+    <path android:fillColor="#1C102C" android:pathData="M31,55h12v10h-12z"/>
+    <path android:fillColor="#1C102C" android:pathData="M48,55h12v10h-12z"/>
+    <path android:fillColor="#1C102C" android:pathData="M65,55h12v10h-12z"/>
+
+    <!-- Mini buttons row 2 -->
+    <path android:fillColor="#1C102C" android:pathData="M31,70h12v10h-12z"/>
+    <path android:fillColor="#1C102C" android:pathData="M48,70h12v10h-12z"/>
+    <path android:fillColor="#F8F8FF" android:pathData="M65,70h12v10h-12z"/>
+</vector>
