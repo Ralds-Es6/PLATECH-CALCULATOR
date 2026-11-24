@@ -1,10 +1,13 @@
 package com.quinto.core;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public final class MathParser {
     private static final DecimalFormat SCI_FMT = new DecimalFormat("0.######E0");
+    private static final MathContext PRECISION = new MathContext(12, RoundingMode.HALF_UP);
 
     private final String s;
     private final boolean deg;
@@ -41,12 +44,14 @@ public final class MathParser {
     }
 
     public static String toRaw(double v) {
-        BigDecimal bd = BigDecimal.valueOf(v).stripTrailingZeros();
+        if (Math.abs(v) < 1e-12) return "0";
+        BigDecimal bd = BigDecimal.valueOf(v).round(PRECISION).stripTrailingZeros();
         return bd.compareTo(BigDecimal.ZERO) == 0 ? "0" : bd.toPlainString();
     }
 
     public static String formatResult(double v) {
-        if (Math.abs(v) >= 1e12 || (v != 0 && Math.abs(v) < 1e-7)) {
+        if (Math.abs(v) < 1e-12) return "0";
+        if (Math.abs(v) >= 1e12 || Math.abs(v) < 1e-7) {
             return SCI_FMT.format(v);
         }
         String raw = toRaw(v);
@@ -201,3 +206,4 @@ public final class MathParser {
         return r;
     }
 }
+

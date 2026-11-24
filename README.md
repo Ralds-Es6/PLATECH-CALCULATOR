@@ -43,3 +43,4 @@ java Mini-calculator/Calculator.java
 - `Calculator/` — Desktop Java Swing Scientific Calculator
 - `android/` — Multi-module Android project (`:core`, `:mini-calculator`, `:scientific-calculator`)
 - `.github/workflows/build-apks.yml` — Automatically builds both APKs and publishes them to GitHub Releases
+

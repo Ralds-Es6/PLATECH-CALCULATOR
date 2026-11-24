@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class CalculatorGUI extends JFrame {
@@ -11,6 +13,7 @@ public class CalculatorGUI extends JFrame {
     private static final Color TEXT_WHITE = new Color(248, 248, 255);
     private static final Color TEXT_MUTED = new Color(176, 180, 202);
     private static final DecimalFormat SCI_FMT = new DecimalFormat("0.######E0");
+    private static final MathContext PRECISION = new MathContext(12, RoundingMode.HALF_UP);
     private static final Font[] DISPLAY_FONTS = {
         new Font("SansSerif", Font.BOLD, 48), new Font("SansSerif", Font.BOLD, 38),
         new Font("SansSerif", Font.BOLD, 30), new Font("SansSerif", Font.BOLD, 24),
@@ -230,12 +233,14 @@ public class CalculatorGUI extends JFrame {
     }
 
     private static String toRaw(double v) {
-        BigDecimal bd = BigDecimal.valueOf(v).stripTrailingZeros();
+        if (Math.abs(v) < 1e-12) return "0";
+        BigDecimal bd = BigDecimal.valueOf(v).round(PRECISION).stripTrailingZeros();
         return bd.compareTo(BigDecimal.ZERO) == 0 ? "0" : bd.toPlainString();
     }
 
     private static String formatResult(double v) {
-        if (Math.abs(v) >= 1e12 || (v != 0 && Math.abs(v) < 1e-7)) return SCI_FMT.format(v);
+        if (Math.abs(v) < 1e-12) return "0";
+        if (Math.abs(v) >= 1e12 || Math.abs(v) < 1e-7) return SCI_FMT.format(v);
         String raw = toRaw(v);
         return raw.startsWith("-") ? "−" + addCommas(raw.substring(1)) : addCommas(raw);
     }

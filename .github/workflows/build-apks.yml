@@ -48,11 +48,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if gh release view v1.0 >/dev/null 2>&1; then
-            gh release upload v1.0 dist/Mini-Calculator.apk dist/Scientific-Calculator.apk --clobber
+          TAG="v1.1"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/Mini-Calculator.apk dist/Scientific-Calculator.apk --clobber
           else
-            gh release create v1.0 dist/Mini-Calculator.apk dist/Scientific-Calculator.apk \
-              --title "Neon Glass Calculators v1.0" \
-              --notes "Download either **Mini-Calculator.apk** or **Scientific-Calculator.apk** below and install on your Android device." \
+            gh release create "$TAG" dist/Mini-Calculator.apk dist/Scientific-Calculator.apk \
+              --title "Neon Glass Calculators $TAG" \
+              --notes "### What's Fixed in $TAG\n- Fixed floating-point precision artifacts (e.g. \`0.2 × 0.2 = 0.04\`, \`0.1 + 0.2 = 0.3\`, \`sin(30°) = 0.5\`)\n- Fixed typing digits after \`)\`, \`π\`, \`e\`, \`%\`, or \`!\` in Scientific Calculator\n- Improved long expression display truncation so newest digits stay visible\n\nDownload either **Mini-Calculator.apk** or **Scientific-Calculator.apk** below and install on your Android device." \
               --latest
           fi
+

@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class ScientificCalculator extends JFrame {
@@ -11,6 +13,7 @@ public class ScientificCalculator extends JFrame {
     private static final Color TEXT_WHITE = new Color(248, 248, 255);
     private static final Color TEXT_MUTED = new Color(176, 180, 202);
     private static final DecimalFormat SCI_FMT = new DecimalFormat("0.######E0");
+    private static final MathContext PRECISION = new MathContext(12, RoundingMode.HALF_UP);
     private static final Font[] DISPLAY_FONTS = {
         new Font("SansSerif", Font.BOLD, 44), new Font("SansSerif", Font.BOLD, 34),
         new Font("SansSerif", Font.BOLD, 26), new Font("SansSerif", Font.BOLD, 21),
@@ -271,6 +274,7 @@ public class ScientificCalculator extends JFrame {
 
     private void insertDigit(char d) {
         resetEvalFlag(true);
+        if (expr.length() > 0 && needsMultiplyBeforeDigit(last())) expr.append('×');
         boolean singleZero = expr.length() > 0 && last() == '0' &&
             (expr.length() == 1 || isOp(expr.charAt(expr.length() - 2)) || expr.charAt(expr.length() - 2) == '(');
         if (singleZero) {
@@ -285,7 +289,12 @@ public class ScientificCalculator extends JFrame {
         for (int i = expr.length() - 1; i >= 0 && (Character.isDigit(expr.charAt(i)) || expr.charAt(i) == '.'); i--)
             if (expr.charAt(i) == '.') return;
         if (expr.length() == 0 || isOp(last()) || last() == '(') expr.append("0.");
+        else if (needsMultiplyBeforeDigit(last())) expr.append("×0.");
         else expr.append('.');
+    }
+
+    private static boolean needsMultiplyBeforeDigit(char c) {
+        return c == ')' || c == 'π' || c == 'e' || c == '%' || c == '!';
     }
 
     private void insertOp(char op) {
@@ -345,12 +354,14 @@ public class ScientificCalculator extends JFrame {
     }
 
     private static String toRaw(double v) {
-        BigDecimal bd = BigDecimal.valueOf(v).stripTrailingZeros();
+        if (Math.abs(v) < 1e-12) return "0";
+        BigDecimal bd = BigDecimal.valueOf(v).round(PRECISION).stripTrailingZeros();
         return bd.compareTo(BigDecimal.ZERO) == 0 ? "0" : bd.toPlainString();
     }
 
     private static String formatResult(double v) {
-        if (Math.abs(v) >= 1e12 || (v != 0 && Math.abs(v) < 1e-7)) return SCI_FMT.format(v);
+        if (Math.abs(v) < 1e-12) return "0";
+        if (Math.abs(v) >= 1e12 || Math.abs(v) < 1e-7) return SCI_FMT.format(v);
         String raw = toRaw(v);
         return raw.startsWith("-") ? "−" + addCommas(raw.substring(1)) : addCommas(raw);
     }

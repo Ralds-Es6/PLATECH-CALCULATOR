@@ -3,6 +3,7 @@ package com.quinto.minicalculator;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -71,6 +72,7 @@ public class MainActivity extends Activity {
         exprView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         exprView.setGravity(Gravity.END);
         exprView.setSingleLine(true);
+        exprView.setEllipsize(TextUtils.TruncateAt.START);
 
         displayView = new TextView(this);
         displayView.setText("0");
@@ -79,6 +81,7 @@ public class MainActivity extends Activity {
         displayView.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
         displayView.setGravity(Gravity.END);
         displayView.setSingleLine(true);
+        displayView.setEllipsize(TextUtils.TruncateAt.START);
 
         display.addView(exprView);
         display.addView(displayView);
@@ -236,3 +239,4 @@ public class MainActivity extends Activity {
         displayView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp);
     }
 }
+

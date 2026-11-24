@@ -3,6 +3,7 @@ package com.quinto.scientificcalculator;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -84,6 +85,7 @@ public class MainActivity extends Activity {
         exprView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
         exprView.setGravity(Gravity.END);
         exprView.setSingleLine(true);
+        exprView.setEllipsize(TextUtils.TruncateAt.START);
 
         displayView = new TextView(this);
         displayView.setText("0");
@@ -92,6 +94,7 @@ public class MainActivity extends Activity {
         displayView.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
         displayView.setGravity(Gravity.END);
         displayView.setSingleLine(true);
+        displayView.setEllipsize(TextUtils.TruncateAt.START);
 
         display.addView(exprView);
         display.addView(displayView);
@@ -269,6 +272,7 @@ public class MainActivity extends Activity {
 
     private void insertDigit(char d) {
         resetEvalFlag(true);
+        if (expr.length() > 0 && needsMultiplyBeforeDigit(last())) expr.append('×');
         boolean singleZero = expr.length() > 0 && last() == '0' &&
             (expr.length() == 1 || MathParser.isOp(expr.charAt(expr.length() - 2)) || expr.charAt(expr.length() - 2) == '(');
         if (singleZero) {
@@ -284,7 +288,12 @@ public class MainActivity extends Activity {
             if (expr.charAt(i) == '.') return;
         }
         if (expr.length() == 0 || MathParser.isOp(last()) || last() == '(') expr.append("0.");
+        else if (needsMultiplyBeforeDigit(last())) expr.append("×0.");
         else expr.append('.');
+    }
+
+    private static boolean needsMultiplyBeforeDigit(char c) {
+        return c == ')' || c == 'π' || c == 'e' || c == '%' || c == '!';
     }
 
     private void insertOp(char op) {
@@ -336,3 +345,4 @@ public class MainActivity extends Activity {
         displayView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp);
     }
 }
+
